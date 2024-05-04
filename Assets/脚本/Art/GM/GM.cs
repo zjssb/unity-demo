@@ -109,7 +109,6 @@ public class GM : MonoBehaviour
     /// </summary>
     public Speed 顺序;
 
-
     public GameObject GameOverPanel;
 
     private void Start()
@@ -236,7 +235,7 @@ public class GM : MonoBehaviour
                 P.Turn_start();
                 //attArt = monsterList[0] as Monster;
             }
-            
+
             //需要一个信号量，判读当前回合人物行动完毕
             yield return new WaitUntil(() => over);
             // 当一个回合执行完毕，摄像机 复原
@@ -308,6 +307,7 @@ public class GM : MonoBehaviour
                 }
                 yield return new WaitUntil(() => wait);
             }
+            isExTime = false;
             onEx = beginEx;
             UIGoal();
             UGUI.gui.UIChange(1);
@@ -494,7 +494,7 @@ public class GM : MonoBehaviour
         }
         顺序.RemoveHead(art);
         art.gameObject.SetActive(false);
-        Destroy(art.gameObject,1f);
+        Destroy(art.gameObject, 1f);
     }
 
     public void GameOver()
@@ -504,15 +504,17 @@ public class GM : MonoBehaviour
         StopAllCoroutines();
         GameOverPanel.SetActive(true);
         // 向结束面板的按钮添加方法
-        GameOverPanel.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(() =>
-        {
-            #if UNITY_EDITOR
+        GameOverPanel
+            .transform.GetChild(1)
+            .GetComponent<Button>()
+            .onClick.AddListener(() =>
+            {
+#if UNITY_EDITOR
                 UnityEditor.EditorApplication.isPlaying = false;
-            #else
+#else
                 Application.Quit();
-            #endif
-
-        });
+#endif
+            });
         if (playerList.Count == 0)
         {
             print("玩家失败");
@@ -524,5 +526,4 @@ public class GM : MonoBehaviour
             GameOverPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "玩家胜利";
         }
     }
-
 }
